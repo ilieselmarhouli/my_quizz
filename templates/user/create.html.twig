@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MyQuizz : Création{% endblock %}
+
+{% block body %}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(CategorieForm) }}
+        <h1>Créer un quizz</h1>
+    {{ form_end(CategorieForm) }}
+
+    {{ form_start(QuestionForm) }}
+        <h1>Créer une question</h1>
+    {{ form_end(QuestionForm) }}
+
+    {{ form_start(ReponseForm) }}
+        <h1>Créer une réponse</h1>
+    {{ form_end(ReponseForm) }}
+{% endblock %}

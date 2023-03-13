@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MyQuizz : Accueil
+{% endblock %}
+
+{% block body %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+	<div class="container mb-3">
+		<div class="row gap-5 d-flex justify-content-center">
+			{% for quiz in quizz %}
+				{% set img =  "images/quizz/#{quiz.id}.jpg" %}
+				<div class="card bg-dark" style="width: min-content;">
+					<a class="text-decoration-none" href="{{ path('app_quizz', {id: quiz.id}) }}">
+						<img style="width: 300px; height: 150px; object-fit: cover;" src="{{ asset(img) }}" class="card-img-top rounded" alt="{{ quiz.name }}">
+						<div class="card-body">
+							<h5 class="card-title text-light">{{ quiz.name|e }}</h5>
+						</div>
+					</a>
+				</div>
+
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'email/base.html.twig' %}
+
+{% block content %}
+	{% apply inky_to_html %}
+	<container>
+		<row class="header">
+			<columns>
+				<a href="{{ url('app_index') }}">
+					<img src="{{ email.image('@images/email_logo.png') }}" class="img-fluid logo" alt="Trinity corp">
+				</a>
+			</columns>
+		</row>
+
+		<row class="welcome">
+				<spacer size="35"></spacer>
+				<h1>
+					<center>
+						Salut
+						{{handle}}
+						!
+					</center>
+				</h1>
+				<spacer size="10"></spacer>
+		</row>
+
+		<row>
+			<columns>
+				Bienvenue sur<strong>
+					MyQuizz</strong>. Pour continuer sur notre site, 
+                    vérifier votre compte dès maintenant.
+			</columns>
+		</row>
+		<row>
+			<columns>
+				<center>
+					<button class="expanded rounded secondary" href="{{ signedUrl }}">Confirmez votre email</a>
+				</center>
+			</columns>
+		</row>
+
+        <row class="bottom">
+            <columns>
+                <center>
+                    <spacer size="20"></spacer>
+                    <div>
+                        Big ❤️ de la Trinity Corporation
+                    </div>
+                </center>
+            </columns>
+        </row>
+    </container>
+
+{% endapply %}
+
+{% endblock %}

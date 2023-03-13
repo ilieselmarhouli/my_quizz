@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MyQuizz : Quizz sur
+	{{ categorie.name }}
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="container d-flex flex-column">
+		{% set img = "images/quizz/#{id}.jpg" %}
+
+		<div class="container mb-5 d-flex justify-content-between">
+			<div class="row">
+				<h2>{{ categorie.name }}
+					{% if score is defined and score > count / 2 %}
+						<btn class="btn btn-dark btn-lg text-success">{{ score }}/{{count}}</btn>
+					{% elseif score is defined and score <= count / 2 %}
+						<btn class="btn btn-dark btn-lg text-danger">{{ score }}/{{count}}</btn>
+					{% endif %}
+				</h2>
+				{% if last_score is not empty %}
+					<h6 class="align-self-center">Dernier score :
+						{% set score_split = last_score|split('/') %}
+						{% if score_split[0] > score_split[1] / 2 %}
+							<btn class="btn btn-dark btn-sm text-success">{{ last_score }}</btn>
+						{% elseif score_split[0] <= score_split[1] / 2 %}
+							<btn class="btn btn-dark btn-sm text-danger">{{ last_score }}</btn>
+						{% endif %}
+					</h6>
+				{% endif %}
+				<img style="width: 600px; height: 300px; object-fit: cover;" src="{{ asset(img) }}" class="card-img-top img-fluid rounded" alt="{{categorie.name}}" style="width: 600px; object-fit:contain;">
+			</div>
+
+		</div>
+
+		{% if questions is empty %}
+			<p class="fw-bold mb-5 pb-5">Ce quizz ne comporte, pour l'instant, aucune question. Revenez plus tard !</p>
+		{% endif %}
+
+		<form class="mb-5" {% if results is not defined %} action="{{ path('app_score', {id: categorie.id}) }}" method="POST" {% endif %}>
+			<div class="row gap-5">
+				{% for question in questions %}
+					<div class="card bg-dark d-flex flex-column p-0" style="width: 25rem; height: min-content;">
+						<div class="card-header text-light h5 bg-secondary">
+							{{ question.question }}
+						</div>
+						<div class="card-body">
+							{% if reponses.findAllById(question.id) is empty %}
+								<p class="text-light">Oh non, il n'y a aucune question :(</p>
+							{% endif %}
+							{% for reponse in reponses.findAllById(question.id) %}
+								{% set template = "#{reponse.id}/#{reponse.reponseExpected}" %}
+								<div class="input-group my-2">
+									<div class="input-group-text border border-dark">
+										{% if results is defined and reponse.id in results %}
+											<input id="{{ reponse.id }}" class="form-check-input mt-0 bg-dark" type="radio" name="{{ question.id }}" value="{{ reponse.id }}" disabled checked>
+										{% elseif results is defined %}
+											<input id="{{ reponse.id }}" class="form-check-input mt-0 bg-dark" type="radio" name="{{ question.id }}" value="{{ reponse.id }}" disabled>
+										{% else %}
+											<input id="{{ reponse.id }}" class="form-check-input mt-0 bg-dark" type="radio" name="{{ question.id }}" value="{{ reponse.id }}" required>
+										{% endif %}
+									</div>
+									{% if results is defined and reponse.id in expecteds and reponse.reponseExpected == 1 %}
+										<label for='{{ reponse.id }}' class="form-control bg-success text-light border border-dark" value="">{{ reponse.reponse }}</label>
+									{% elseif results is defined and reponse.id in results and reponse.reponseExpected == 0 %}
+										<label for='{{ reponse.id }}' class="form-control bg-danger text-light border border-dark" value="">{{ reponse.reponse }}</label>
+									{% else %}
+										<label for='{{ reponse.id }}' class="form-control text-dark border border-dark" value="">{{ reponse.reponse }}</label>
+									{% endif %}
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+			{% if not app.user %}
+				<button class="btn btn-lg btn-dark my-3 disabled" type="submit">
+					Connectez-vous pour répondre
+				</button>
+			{% elseif questions is not empty and results is not defined %}
+				<button class="btn btn-lg btn-dark my-3" type="submit">
+					Valider
+				</button>
+			{% endif %}
+
+		</form>
+	</div>
+{% endblock %}

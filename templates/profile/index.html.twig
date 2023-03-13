@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!
+{% endblock %}
+
+{% block body %}
+
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+	<div class="d-flex justify-content-center">
+		<div class="m-5">
+			<h1>Profil de @{{ app.user.handle }}</h1>
+			<p>Compte créé depuis le
+				{{ app.user.createdAt|date("d/m/Y") }}.</p>
+				<a class="btn btn-dark" href="{{ path('app_logout') }}">Déconnexion</a>
+		</div>
+		{{ form_start(form) }}
+		<h1>Éditer votre profil</h1>
+		{{ form_end(form) }}
+
+		{% if score is not empty %}
+			<div class="m-5">
+				<h1>Historique des quizz passés</h1>
+				<div class="list-group list-group-flush rounded" style="height:400px; overflow:hidden; overflow-y:scroll;" >
+				{% for result in score %}
+					<a href="{{ path('app_quizz', {id: result.categorie.id }) }}" class="list-group-item bg-dark text-light">
+					{{result.score}} |
+					{{ categorie.find(result.categorie) }} |
+					{{ result.createdAt|date('d/m/Y | H:m:s') }}
+					</a>
+				{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
